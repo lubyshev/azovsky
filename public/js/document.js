@@ -4,17 +4,17 @@ function rateError(){
     );
 }
 
-$(function(){
+$( function(){
    window.setInterval( function(){
        $.ajax('/ajax/rate')
-       .done(function( data ) {
-            if( data.success ) {
+       .done( function( data ) {
+            if( data && data.success ) {
                 $('.current-rate').html( data.html );
             } else {
                rateError();
             }
        })
-       .fail(function() {
+       .fail( function() {
            rateError();
        });
    }, 10000);

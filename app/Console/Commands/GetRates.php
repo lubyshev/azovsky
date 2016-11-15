@@ -10,8 +10,6 @@ use Log;
 
 class GetRates extends Command
 {
-    const CRON_JOB_TTL = 1; // How long command will be executed (minutes)
-    const LOOP_TIMEOUT = 10; // How long to wait betwenn iteratins (seconds)
 
     /**
      * The name and signature of the console command.
@@ -75,7 +73,6 @@ class GetRates extends Command
           }
           sleep( $timeout );
         }
-        Cache::forget( $jobExists );
       }
     }
 
@@ -128,7 +125,8 @@ class GetRates extends Command
         $rates = config('rates.sources');
 
         if( ! $rates || ! is_array( $rates )) {
-          $this->error( 'Rate sources is not defined');
+          $this->error( "Config option 'rates.sources' sources is not defined.");
+          return false;
         }
 
         $newRates = [];
@@ -162,12 +160,13 @@ class GetRates extends Command
             }
             $newRates [$index] = $rate;
         }
+
         if( empty( $newRates )) {
           $this->error( "There are no aviable rates.");
           return false;
-        } else {
-          $this->rates = $newRates;
-          return true;
         }
+
+        $this->rates = $newRates;
+        return true;
     }
 }
